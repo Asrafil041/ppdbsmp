@@ -6,16 +6,17 @@ session_start();
 if(isset($_POST['btn_registrasi'])) {
     // print_r($_POST);
 
-    $nama = $_POST['nama'];
-$tempat_lahir = $_POST['tempat_lahir'];
-$tanggal_lahir = date("Y-m-d", strtotime($_POST['tanggal_lahir']));
-$jenis_kelamin = isset($_POST['jenis_kelamin']) ? $_POST['jenis_kelamin'] : null; // Tambahkan validasi ini
-$agama = $_POST['agama'];
-$alamat = $_POST['alamat'];
-$email = $_POST['email'];
-$telepon = $_POST['telepon'];
-$password = md5($_POST['password']);
-$ulangi_password = md5($_POST['ulangi_password']);
+    $nama = trim($_POST['nama']);
+    $tempat_lahir = trim($_POST['tempat_lahir']);
+    $tanggal_lahir = date("Y-m-d", strtotime($_POST['tanggal_lahir']));
+    $jenis_kelamin = isset($_POST['jenis_kelamin']) ? $_POST['jenis_kelamin'] : null;
+    $agama = trim($_POST['agama']);
+    $alamat = trim($_POST['alamat']);
+    $email = trim($_POST['email']);
+    $telepon = trim($_POST['telepon']);
+    $foto = '';
+    $password = md5($_POST['password']);
+    $ulangi_password = md5($_POST['ulangi_password']);
 
     if($password != $ulangi_password) {
         echo "Error: Password tidak sama";
@@ -23,37 +24,38 @@ $ulangi_password = md5($_POST['ulangi_password']);
         die;
     }
 
-    // Insert tabel user
-    // $sql_user = "INSERT INTO users () values ('')";
-    $sql_user = "INSERT INTO users (nama, username, password, level) values ('$nama', '$email', '$password', 'siswa')";
-    $result_user = mysqli_query($koneksi, $sql_user);
+    mysqli_begin_transaction($koneksi);
 
-    if($result_user){
-        $id_user = mysqli_insert_id($koneksi);
-
-        // insert table pendaftar
-        $sql_pendaftar = "INSERT INTO pendaftar (nama, tmpt_lahir, tgl_lahir, jenis_kelamin, agama, alamat, email, telepon, users_id) values ('$nama', '$tempat_lahir', '$tanggal_lahir', '$jenis_kelamin', '$agama', '$alamat', '$email', '$telepon', '$id_user')";
-
-        $result_pendaftar = mysqli_query($koneksi, $sql_pendaftar);
-
-        if($result_pendaftar){
-            // jika berhasil
-            $_SESSION['pesan_registrasi'] = "Registrasi Berhasil, Login Menggunakan Email dan Password anda!";
-
-            header('location:login.php');
-            exit;
-
-        } else {
-            // jika query pendaftar gagal
-            echo "Error insert pendaftar ". mysqli_error($koneksi);
-            echo "<br><br> <button type='button' onclick='history.back();'> Kembali </button>";
-            die;
+    try {
+        $stmt_user = mysqli_prepare($koneksi, "INSERT INTO users (nama, username, password, level) VALUES (?, ?, ?, 'siswa')");
+        if (!$stmt_user) {
+            throw new Exception("Gagal menyiapkan query users.");
         }
 
+        mysqli_stmt_bind_param($stmt_user, "sss", $nama, $email, $password);
+        mysqli_stmt_execute($stmt_user);
 
-    } else {
-        // jika query users gagal
-        echo "Error insert users: ". mysqli_error($koneksi);
+        $id_user = mysqli_insert_id($koneksi);
+        mysqli_stmt_close($stmt_user);
+
+        $stmt_pendaftar = mysqli_prepare($koneksi, "INSERT INTO pendaftar (nama, tmpt_lahir, tgl_lahir, jenis_kelamin, agama, alamat, email, telepon, foto, users_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt_pendaftar) {
+            throw new Exception("Gagal menyiapkan query pendaftar.");
+        }
+
+        mysqli_stmt_bind_param($stmt_pendaftar, "sssssssssi", $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $agama, $alamat, $email, $telepon, $foto, $id_user);
+        mysqli_stmt_execute($stmt_pendaftar);
+        mysqli_stmt_close($stmt_pendaftar);
+
+        mysqli_commit($koneksi);
+
+        $_SESSION['pesan_registrasi'] = "Registrasi Berhasil, Login Menggunakan Email dan Password anda!";
+        header('location:login.php');
+        exit;
+
+    } catch (Throwable $e) {
+        mysqli_rollback($koneksi);
+        echo "Error registrasi: " . $e->getMessage();
         echo "<br><br> <button type='button' onclick='history.back();'> Kembali </button>";
         die;
     }
