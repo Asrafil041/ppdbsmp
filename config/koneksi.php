@@ -8,18 +8,52 @@ if (file_exists(__DIR__ . '/../.env')) {
     }
 }
 
-// Get database config from environment or use defaults
-$host = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
-$port = (int) (getenv('DB_PORT') ?: getenv('MYSQLPORT') ?: 3306);
-$username = getenv('DB_USER') ?: getenv('MYSQLUSER') ?: 'root';
-$password = getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
-$database = getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: 'pendaftar';
+function env_first(array $keys): ?string
+{
+    foreach ($keys as $key) {
+        $value = getenv($key);
+        if ($value !== false) {
+            $value = trim((string) $value);
+            if ($value !== '') {
+                return $value;
+            }
+        }
+    }
+    return null;
+}
 
-$koneksi = mysqli_connect($host, $username, $password, $database, $port);
+$host = env_first(['DB_HOST', 'MYSQLHOST']);
+$port = env_first(['DB_PORT', 'MYSQLPORT']);
+$username = env_first(['DB_USER', 'MYSQLUSER']);
+$password = env_first(['DB_PASSWORD', 'MYSQLPASSWORD']);
+$database = env_first(['DB_NAME', 'MYSQLDATABASE']);
 
-if (!$koneksi) {
+$dbUrl = env_first(['MYSQL_URL', 'DATABASE_URL', 'DB_URL']);
+if ($dbUrl) {
+    $parsed = parse_url($dbUrl);
+    if ($parsed !== false) {
+        $host = $host ?: ($parsed['host'] ?? null);
+        $port = $port ?: (($parsed['port'] ?? null) ? (string) $parsed['port'] : null);
+        $username = $username ?: ($parsed['user'] ?? null);
+        $password = $password ?: ($parsed['pass'] ?? null);
+        $path = $parsed['path'] ?? '';
+        $database = $database ?: ($path ? ltrim($path, '/') : null);
+    }
+}
+
+$host = $host ?: '127.0.0.1';
+$port = (int) ($port ?: 3306);
+$username = $username ?: 'root';
+$password = $password ?? '';
+$database = $database ?: 'pendaftar';
+
+try {
+    $koneksi = mysqli_init();
+    mysqli_options($koneksi, MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+    mysqli_real_connect($koneksi, $host, $username, $password, $database, $port);
+} catch (mysqli_sql_exception $exception) {
     http_response_code(500);
-    exit('Koneksi database gagal. Periksa konfigurasi environment database.');
+    exit('Koneksi database gagal. Pastikan variabel DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME (atau MYSQL_URL) sudah benar di Railway.');
 }
 
 mysqli_set_charset($koneksi, 'utf8mb4');

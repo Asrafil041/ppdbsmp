@@ -1,3 +1,14 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+
+$pesan_registrasi = $_SESSION['pesan_registrasi'] ?? null;
+$login_error = $_SESSION['login_error'] ?? null;
+
+unset($_SESSION['pesan_registrasi'], $_SESSION['login_error']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,28 +56,21 @@
                     <h1 class="h4 text-gray-900">Pendaftaran Siswa</h1>
                     <h1 class="h4 text-gray-900 mb-4"><b>SMP Slawe</b></h1>
 
-                    <?php 
-                    session_start();
-                    
-                    if(isset($_SESSION['pesan_registrasi'])) { ?>
+                    <?php if($pesan_registrasi) { ?>
 
                     <div class="alert alert-success">
-                      <?= $_SESSION['pesan_registrasi'] ?>
+                      <?= $pesan_registrasi ?>
                     </div>
  
                     <?php } 
                     
-                    if(isset($_SESSION['login_error'])) { ?>
+                    if($login_error) { ?>
 
                     <div class="alert alert-danger">
-                      <?= $_SESSION['login_error'] ?>
+                      <?= $login_error ?>
                     </div>
 
-                    <?php } 
-                    
-                    session_destroy();
-                    
-                    ?>
+                    <?php } ?>
 
                   </div>
                   <form class="user" action="login_control.php" method="POST">
