@@ -1,17 +1,26 @@
 <?php
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 include('koneksi.php');
 
-$base_url = "http://localhost/ppdb";
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+$base_url = $scheme . '://' . $host . ($basePath !== '' ? $basePath : '');
 
-$uri_segment = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-// var_dump($uri_segment);
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$uri_segment = array_values(array_filter(explode('/', (string) $requestPath), static function ($value) {
+    return $value !== '';
+}));
+
+$firstSegment = $uri_segment[0] ?? '';
 
 if(isset($_SESSION['status']) && $_SESSION['status'] == 'login') {
     // lanjut
-    if($uri_segment[2] == $_SESSION['level']) {
+    if($firstSegment == $_SESSION['level']) {
         // lanjut
     } else {
         echo "Error: Forbidden !!!";
@@ -22,6 +31,7 @@ if(isset($_SESSION['status']) && $_SESSION['status'] == 'login') {
 } else {
     $_SESSION['login_error'] = "Silahkan Login untuk masuk kedalam sistem";
     header('location:'. $base_url . '/login.php');
+    exit;
 }
 
 ?>
