@@ -25,14 +25,11 @@ $ulangi_password = md5($_POST['ulangi_password']);
 
     // Insert tabel user
     // $sql_user = "INSERT INTO users () values ('')";
-    $sql_user = "INSERT INTO users (nama, username, password, level) values ('$nama', '$email', '$password', 'siswa', 'foto_SKHU')";
+    $sql_user = "INSERT INTO users (nama, username, password, level) values ('$nama', '$email', '$password', 'siswa')";
     $result_user = mysqli_query($koneksi, $sql_user);
 
     if($result_user){
-        $data_user = mysqli_query($koneksi, "SELECT LAST_INSERT_ID()");
-        while($u = mysqli_fetch_array($data_user)){
-            $id_user = $u[0];
-        }
+        $id_user = mysqli_insert_id($koneksi);
 
         // insert table pendaftar
         $sql_pendaftar = "INSERT INTO pendaftar (nama, tmpt_lahir, tgl_lahir, jenis_kelamin, agama, alamat, email, telepon, users_id) values ('$nama', '$tempat_lahir', '$tanggal_lahir', '$jenis_kelamin', '$agama', '$alamat', '$email', '$telepon', '$id_user')";
@@ -44,6 +41,7 @@ $ulangi_password = md5($_POST['ulangi_password']);
             $_SESSION['pesan_registrasi'] = "Registrasi Berhasil, Login Menggunakan Email dan Password anda!";
 
             header('location:login.php');
+            exit;
 
         } else {
             // jika query pendaftar gagal
@@ -62,6 +60,7 @@ $ulangi_password = md5($_POST['ulangi_password']);
 
 } else {
     header('location:registrasi.php');
+    exit;
 }
 
 ?>
