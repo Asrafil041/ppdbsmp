@@ -56,6 +56,25 @@ try {
     exit('Koneksi database gagal. Pastikan variabel DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME (atau MYSQL_URL) sudah benar di Railway.');
 }
 
+$tableCheck = mysqli_query($koneksi, "SHOW TABLES LIKE 'users'");
+$usersTableExists = $tableCheck && mysqli_num_rows($tableCheck) > 0;
+
+if (!$usersTableExists) {
+    $sqlDumpPath = __DIR__ . '/../db/pendaftaran.sql';
+    if (file_exists($sqlDumpPath)) {
+        $sqlDump = file_get_contents($sqlDumpPath);
+        if ($sqlDump !== false && trim($sqlDump) !== '') {
+            if (mysqli_multi_query($koneksi, $sqlDump)) {
+                do {
+                    if ($result = mysqli_store_result($koneksi)) {
+                        mysqli_free_result($result);
+                    }
+                } while (mysqli_more_results($koneksi) && mysqli_next_result($koneksi));
+            }
+        }
+    }
+}
+
 mysqli_set_charset($koneksi, 'utf8mb4');
 
 ?>
