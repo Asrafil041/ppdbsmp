@@ -8,7 +8,10 @@ include('koneksi.php');
 
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+$scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/');
+$basePath = preg_replace('#/(admin|siswa)/[^/]+$#', '', $scriptPath);
+$basePath = preg_replace('#/[^/]+$#', '', (string) $basePath);
+$basePath = rtrim((string) $basePath, '/');
 $base_url = $scheme . '://' . $host . ($basePath !== '' ? $basePath : '');
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
