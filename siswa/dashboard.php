@@ -158,7 +158,10 @@
             </div>
             <div class="card-body">
               <?php if(!empty($data_pendaftar)) {
-                $foto = (!empty($data_pendaftar['foto'])) ? '../uploads/' . $data_pendaftar['foto'] : '../assets/img/avatar.jpg';
+                $foto = '../assets/img/avatar.jpg';
+                if(!empty($data_pendaftar['foto']) && file_exists(__DIR__ . '/../uploads/' . $data_pendaftar['foto'])) {
+                  $foto = '../uploads/' . $data_pendaftar['foto'];
+                }
               ?>
               <div class="card-body">
                 <div class="col-auto mt-3 text-center">
@@ -227,8 +230,17 @@
             <div class="card-body text-center">
               <?php
               $foto_SKHU = '../assets/img/avatar.jpg';
-              if(!empty($data_pendaftar) && !empty($data_pendaftar['foto_SKHU'])) {
-                $foto_SKHU = '../uploads/' . $data_pendaftar['foto_SKHU'];
+              if(!empty($data_pendaftar)) {
+                $nama_file_skhu = '';
+                if(!empty($data_pendaftar['foto_SKHU'])) {
+                  $nama_file_skhu = $data_pendaftar['foto_SKHU'];
+                } else if(!empty($data_pendaftar['foto_skhu'])) {
+                  $nama_file_skhu = $data_pendaftar['foto_skhu'];
+                }
+
+                if($nama_file_skhu !== '' && file_exists(__DIR__ . '/../uploads/' . $nama_file_skhu)) {
+                  $foto_SKHU = '../uploads/' . $nama_file_skhu;
+                }
               }
               ?>
               <img src="<?= $foto_SKHU ?>" class="img-fluid img-thumbnail" alt="menunggu" style="width: 200px; height: 200px; cursor: pointer;" data-toggle="modal" data-target="#skhuModal">

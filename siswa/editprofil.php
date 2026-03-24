@@ -24,7 +24,7 @@ include('../topfoot/header.php');
                     </div>
                     <div class="col-md-6">
                         <label for="tanggal_lahir">Tanggal Lahir</label>
-                        <input type="text" class="form-control datepicker" id="tanggal_lahir" placeholder="Tanggal Lahir" name="tanggal_lahir" value="<?= (!empty($data_pendaftar['tgl_lahir']) && $data_pendaftar['tgl_lahir'] != '0000-00-00') ? date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])) : '' ?>">
+                        <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="<?= (!empty($data_pendaftar['tgl_lahir']) && $data_pendaftar['tgl_lahir'] != '0000-00-00') ? date("Y-m-d", strtotime($data_pendaftar['tgl_lahir'])) : '' ?>">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -100,12 +100,11 @@ include('../topfoot/header.php');
                 <div class="form-group">
                     <label for="foto_SKHU">Foto SKHU</label>
                     <?php
-                    if(isset($data_pendaftar['foto_SKHU']) && $data_pendaftar['foto_SKHU'] != '') {
+                    $foto_SKHU = '../assets/img/avatar.jpg';
+                    if(isset($data_pendaftar['foto_SKHU']) && $data_pendaftar['foto_SKHU'] != '' && file_exists(__DIR__ . '/../uploads/' . $data_pendaftar['foto_SKHU'])) {
                         $foto_SKHU = '../uploads/' . $data_pendaftar['foto_SKHU'];
-                    } else if(isset($data_pendaftar['foto_skhu']) && $data_pendaftar['foto_skhu'] != '') {
+                    } else if(isset($data_pendaftar['foto_skhu']) && $data_pendaftar['foto_skhu'] != '' && file_exists(__DIR__ . '/../uploads/' . $data_pendaftar['foto_skhu'])) {
                         $foto_SKHU = '../uploads/' . $data_pendaftar['foto_skhu'];
-                    } else {
-                        $foto_SKHU = '../assets/img/no-image.png';
                     }
                     ?>
                     <img src="<?= $foto_SKHU ?>" alt="Foto SKHU" class="img-fluid img-thumbnail mb-2" style="max-width: 100%; height: auto;">

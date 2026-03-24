@@ -137,7 +137,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $_SESSION['nama']; ?></span>
                 <?php
-                if(isset($data_pendaftar['foto']) && $data_pendaftar['foto'] != '') {
+                if(isset($data_pendaftar['foto']) && $data_pendaftar['foto'] != '' && file_exists(__DIR__ . '/../uploads/' . $data_pendaftar['foto'])) {
                     $foto = '../uploads/' . $data_pendaftar['foto'];
                 } else {
                     $foto = '../assets/img/avatar.jpg';
