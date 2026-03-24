@@ -14,16 +14,16 @@
                 
                 <div class="form-group">
                     <label for="nama">Nama</label>
-                    <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama" name="nama" value="<?= $data_pendaftar['nama'] ?>">
+                    <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama" name="nama" value="<?= isset($data_pendaftar['nama']) ? $data_pendaftar['nama'] : '' ?>">
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="tempat_lahir">Tempat Lahir</label>
-                        <input type="text" class="form-control" id="tempat_lahir" placeholder="Tempat lahir" name="tempat_lahir" value="<?= $data_pendaftar['tmpt_lahir'] ?>">
+                        <input type="text" class="form-control" id="tempat_lahir" placeholder="Tempat lahir" name="tempat_lahir" value="<?= isset($data_pendaftar['tmpt_lahir']) ? $data_pendaftar['tmpt_lahir'] : '' ?>">
                     </div>
                     <div class="col-md-6">
                         <label for="tanggal_lahir">Tanggal Lahir</label>
-                        <input type="text" class="form-control datepicker" id="tanggal_lahir" placeholder="Tanggal Lahir" name="tanggal_lahir" value="<?= date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])); ?>">
+                        <input type="text" class="form-control datepicker" id="tanggal_lahir" placeholder="Tanggal Lahir" name="tanggal_lahir" value="<?= (!empty($data_pendaftar['tgl_lahir']) && $data_pendaftar['tgl_lahir'] != '0000-00-00') ? date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])) : '' ?>">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -33,9 +33,9 @@
                         $laki = "";
                         $perempuan = "";
 
-                        if($data_pendaftar['jenis_kelamin'] == "L") {
+                        if(isset($data_pendaftar['jenis_kelamin']) && $data_pendaftar['jenis_kelamin'] == "L") {
                             $laki = "checked";
-                        } else {
+                        } else if(isset($data_pendaftar['jenis_kelamin']) && $data_pendaftar['jenis_kelamin'] == "P") {
                             $perempuan = "checked";
                         }
                         ?>
@@ -57,26 +57,26 @@
                         <label for="agama">Agama</label>
                         <select name="agama" id="agama" class="form-control">
                             <option value="">Pilih Agama</option>
-                            <option value="islam" <?php if($data_pendaftar['agama'] == 'islam'){ echo "selected"; } ?>>Islam</option>
-                            <option value="kristen" <?php if($data_pendaftar['agama'] == 'kristen'){ echo "selected"; } ?>>Kristen</option>
-                            <option value="katolik" <?php if($data_pendaftar['agama'] == 'katolik'){ echo "selected"; } ?>>Katolik</option>
-                            <option value="hindu" <?php if($data_pendaftar['agama'] == 'hindu'){ echo "selected"; } ?>>Hindu</option>
-                            <option value="budha" <?php if($data_pendaftar['agama'] == 'budha'){ echo "selected"; } ?>>Budha</option>
+                            <option value="islam" <?php if(isset($data_pendaftar['agama']) && $data_pendaftar['agama'] == 'islam'){ echo "selected"; } ?>>Islam</option>
+                            <option value="kristen" <?php if(isset($data_pendaftar['agama']) && $data_pendaftar['agama'] == 'kristen'){ echo "selected"; } ?>>Kristen</option>
+                            <option value="katolik" <?php if(isset($data_pendaftar['agama']) && $data_pendaftar['agama'] == 'katolik'){ echo "selected"; } ?>>Katolik</option>
+                            <option value="hindu" <?php if(isset($data_pendaftar['agama']) && $data_pendaftar['agama'] == 'hindu'){ echo "selected"; } ?>>Hindu</option>
+                            <option value="budha" <?php if(isset($data_pendaftar['agama']) && $data_pendaftar['agama'] == 'budha'){ echo "selected"; } ?>>Budha</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="alamat">Alamat</label>
-                    <textarea name="alamat" id="alamat" class="form-control"><?= $data_pendaftar['alamat']; ?></textarea>
+                    <textarea name="alamat" id="alamat" class="form-control"><?= isset($data_pendaftar['alamat']) ? $data_pendaftar['alamat'] : '' ?></textarea>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="email">Email</label>
-                        <input name="email" type="email" class="form-control" id="email" placeholder="Email" value="<?= $data_pendaftar['email'] ?>">
+                        <input name="email" type="email" class="form-control" id="email" placeholder="Email" value="<?= isset($data_pendaftar['email']) ? $data_pendaftar['email'] : '' ?>">
                     </div>
                     <div class="col-md-6">
                         <label for="telepon">Telepon</label>
-                        <input name="telepon" type="text" class="form-control" id="telepon" placeholder="Telepon" value="<?= $data_pendaftar['telepon'] ?>">
+                        <input name="telepon" type="text" class="form-control" id="telepon" placeholder="Telepon" value="<?= isset($data_pendaftar['telepon']) ? $data_pendaftar['telepon'] : '' ?>">
                     </div>
                 </div>
                 
@@ -99,10 +99,12 @@
                 <div class="form-group">
                     <label for="foto_SKHU">Foto SKHU</label>
                     <?php
-                    if(isset($data_pendaftar['foto_skhu']) && $data_pendaftar['foto_SKHU'] != '') {
-                        $foto_skhu = '../uploads/' . $data_pendaftar['foto_SKHU'];
+                    if(isset($data_pendaftar['foto_SKHU']) && $data_pendaftar['foto_SKHU'] != '') {
+                        $foto_SKHU = '../uploads/' . $data_pendaftar['foto_SKHU'];
+                    } else if(isset($data_pendaftar['foto_skhu']) && $data_pendaftar['foto_skhu'] != '') {
+                        $foto_SKHU = '../uploads/' . $data_pendaftar['foto_skhu'];
                     } else {
-                        $foto_skhu = '../assets/img/no-image.png';
+                        $foto_SKHU = '../assets/img/no-image.png';
                     }
                     ?>
                     <img src="<?= $foto_SKHU ?>" alt="Foto SKHU" class="img-fluid img-thumbnail mb-2" style="max-width: 100%; height: auto;">
