@@ -1,5 +1,11 @@
 <?php
 
+function redirect_setelah_submit($url)
+{
+    echo '<script>window.location.href="' . $url . '";</script>';
+    exit;
+}
+
 $id_user = $_SESSION['id_users'];
 $id_pendaftar = null;
 $data_pendaftar = [
@@ -22,6 +28,17 @@ $result_pendaftar = mysqli_query($koneksi, $sql_pendaftar);
 if($result_pendaftar && mysqli_num_rows($result_pendaftar)) {
     $data_pendaftar = mysqli_fetch_array($result_pendaftar);
     $id_pendaftar = $data_pendaftar['id'];
+}
+
+$kolom_foto_skhu = null;
+$cek_kolom_foto_skhu = mysqli_query($koneksi, "SHOW COLUMNS FROM pendaftar LIKE 'foto_skhu'");
+if($cek_kolom_foto_skhu && mysqli_num_rows($cek_kolom_foto_skhu) > 0) {
+    $kolom_foto_skhu = 'foto_skhu';
+} else {
+    $cek_kolom_foto_SKHU = mysqli_query($koneksi, "SHOW COLUMNS FROM pendaftar LIKE 'foto_SKHU'");
+    if($cek_kolom_foto_SKHU && mysqli_num_rows($cek_kolom_foto_SKHU) > 0) {
+        $kolom_foto_skhu = 'foto_SKHU';
+    }
 }
 
 if(isset($_POST['btn_simpan']) && $_POST['btn_simpan'] == 'simpan_profil') {
@@ -88,11 +105,13 @@ if(isset($_POST['btn_simpan']) && $_POST['btn_simpan'] == 'simpan_profil') {
             if($ukuran < 1044070) {
                 move_uploaded_file($file_tmp, '../uploads/' . $ubah_nama_skhu);
 
-                $sql_update_skhu = "UPDATE pendaftar SET foto_skhu = '$ubah_nama_skhu' WHERE id='$id_pendaftar'";
-                $query_update_skhu = mysqli_query($koneksi, $sql_update_skhu);
+                if($kolom_foto_skhu !== null) {
+                    $sql_update_skhu = "UPDATE pendaftar SET $kolom_foto_skhu = '$ubah_nama_skhu' WHERE id='$id_pendaftar'";
+                    $query_update_skhu = mysqli_query($koneksi, $sql_update_skhu);
 
-                if(!$query_update_skhu) {
-                    echo "GAGAL UPLOAD FOTO SKHU"; die;
+                    if(!$query_update_skhu) {
+                        echo "GAGAL UPLOAD FOTO SKHU"; die;
+                    }
                 }
             } else {
                 echo "Gambar SKHU terlalu besar"; die;
@@ -117,8 +136,7 @@ if(isset($_POST['btn_simpan']) && $_POST['btn_simpan'] == 'simpan_profil') {
 
     if($query_update_profil) {
         $_SESSION['pesan_sukses'] = "Edit Profil Sukses!";
-        header('location:dashboard.php');
-        exit;
+        redirect_setelah_submit('dashboard.php');
     } else {
         echo "Gagal update data profil"; die;
     }

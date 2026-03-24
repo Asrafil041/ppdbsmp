@@ -6,8 +6,35 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 include('koneksi.php');
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+$forwardedSsl = $_SERVER['HTTP_X_FORWARDED_SSL'] ?? '';
+$httpsOnServer = $_SERVER['HTTPS'] ?? '';
+$requestScheme = $_SERVER['REQUEST_SCHEME'] ?? '';
+
+$forwardedProto = trim((string) $forwardedProto);
+if (strpos($forwardedProto, ',') !== false) {
+    $forwardedProto = trim(explode(',', $forwardedProto)[0]);
+}
+
+$isHttps = (
+    (!empty($httpsOnServer) && strtolower((string) $httpsOnServer) !== 'off') ||
+    strtolower((string) $forwardedProto) === 'https' ||
+    strtolower((string) $forwardedSsl) === 'on' ||
+    strtolower((string) $requestScheme) === 'https'
+);
+
+$scheme = $isHttps ? 'https' : 'http';
+$host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
+
+if (stripos((string) $host, 'railway.app') !== false) {
+    $scheme = 'https';
+
+    if (!$isHttps) {
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        header('Location: https://' . $host . $requestUri, true, 301);
+        exit;
+    }
+}
 $scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '/');
 $basePath = preg_replace('#/(admin|siswa)/[^/]+$#', '', $scriptPath);
 $basePath = preg_replace('#/[^/]+$#', '', (string) $basePath);

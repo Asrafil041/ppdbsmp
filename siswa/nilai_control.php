@@ -1,5 +1,11 @@
 <?php
 
+function redirect_aman($url)
+{
+    echo '<script>window.location.href="' . $url . '";</script>';
+    exit;
+}
+
 $id_user = $_SESSION['id_users'];
 $sql_pendaftar = "SELECT * FROM pendaftar where users_id = '$id_user'";
 $result_pendaftar = mysqli_query($koneksi, $sql_pendaftar);
@@ -39,8 +45,7 @@ if(mysqli_num_rows($result_pendaftar)){
                 // berhasil
 
                 $_SESSION['pesan_sukses'] = "Edit Nilai Sukses!";
-
-                header('location:dashboard.php');
+                redirect_aman('dashboard.php');
                 
             } else {
                 echo "error ". mysqli_error($koneksi);
@@ -55,7 +60,7 @@ if(mysqli_num_rows($result_pendaftar)){
 
             if($query_insert_nilai){
                 // berhasil
-                header('location:nilai.php');
+                redirect_aman('nilai.php');
                 
             } else {
                 echo "error ". mysqli_error($koneksi);

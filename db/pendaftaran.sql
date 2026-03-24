@@ -65,6 +65,7 @@ CREATE TABLE `pendaftar` (
   `email` varchar(100) DEFAULT NULL,
   `telepon` varchar(45) DEFAULT NULL,
   `foto` varchar(100) NOT NULL,
+  `foto_skhu` varchar(100) DEFAULT NULL,
   `users_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -72,12 +73,12 @@ CREATE TABLE `pendaftar` (
 -- Dumping data for table `pendaftar`
 --
 
-INSERT INTO `pendaftar` (`id`, `nama`, `tmpt_lahir`, `tgl_lahir`, `jenis_kelamin`, `agama`, `alamat`, `email`, `telepon`, `foto`, `users_id`) VALUES
-(1, 'Edi Siswanto', 'Banyuwangi', '1999-06-22', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'est23.edi@gmail.com', '082302002407', '', 9),
-(2, 'anton', 'Banyuwangi', '1998-08-12', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'anton@gmail.com', '082302002407', '', 10),
-(3, 'Tini', 'Banyuwangi', '1999-01-11', 'P', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'tini@gmail.com', '08123456789', '', 11),
-(4, 'Parman', 'Banyuwangi', '1999-01-01', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'parman@gmail.com', '08123456789', '', 12),
-(5, 'Armin', 'Jember', '1999-06-12', 'P', 'islam', 'Jember, Sumber sari, rt 03. rw 04', 'armin@gmail.com', '081234567543', 'Armin.png', 13);
+INSERT INTO `pendaftar` (`id`, `nama`, `tmpt_lahir`, `tgl_lahir`, `jenis_kelamin`, `agama`, `alamat`, `email`, `telepon`, `foto`, `foto_skhu`, `users_id`) VALUES
+(1, 'Edi Siswanto', 'Banyuwangi', '1999-06-22', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'est23.edi@gmail.com', '082302002407', '', NULL, 9),
+(2, 'anton', 'Banyuwangi', '1998-08-12', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'anton@gmail.com', '082302002407', '', NULL, 10),
+(3, 'Tini', 'Banyuwangi', '1999-01-11', 'P', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'tini@gmail.com', '08123456789', '', NULL, 11),
+(4, 'Parman', 'Banyuwangi', '1999-01-01', 'L', 'islam', 'Toyamas, wringin rejo, Gambiran kabupaten Banyuwangi', 'parman@gmail.com', '08123456789', '', NULL, 12),
+(5, 'Armin', 'Jember', '1999-06-12', 'P', 'islam', 'Jember, Sumber sari, rt 03. rw 04', 'armin@gmail.com', '081234567543', 'Armin.png', NULL, 13);
 
 -- --------------------------------------------------------
 

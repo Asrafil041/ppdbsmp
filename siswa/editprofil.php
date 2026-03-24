@@ -1,14 +1,15 @@
-<?php include('../config/auto_load.php'); ?>
-
-<?php include('editprofil_control.php'); ?>
-
-<?php include('../topfoot/header.php'); ?>
+<?php
+ob_start();
+include('../config/auto_load.php');
+include('editprofil_control.php');
+include('../topfoot/header.php');
+?>
 
 
 <div class="container-fluid">
 
   <h1 class="h3 mb-4 text-gray-800">EDIT PROFIL</h1>
-    <form class="user" method="POST" action="<?= $base_url ?>/siswa/editprofil.php" enctype="multipart/form-data">
+    <form class="user" method="POST" action="editprofil.php" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-8">
                 
@@ -84,7 +85,7 @@
             </div>
            <div class="col-md-4">
                 <?php
-                if(isset($data_pendaftar['foto']) && $data_pendaftar['foto'] != '') {
+                if(isset($data_pendaftar['foto']) && $data_pendaftar['foto'] != '' && file_exists('../uploads/' . $data_pendaftar['foto'])) {
                     $foto = '../uploads/' . $data_pendaftar['foto'];
                 } else {
                     $foto = '../assets/img/avatar.jpg';
@@ -123,3 +124,4 @@
 </div>
 
 <?php include('../topfoot/footer.php'); ?>
+<?php ob_end_flush(); ?>

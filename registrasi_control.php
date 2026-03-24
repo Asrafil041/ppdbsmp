@@ -1,5 +1,24 @@
 <?php
 
+$forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+if (strpos($forwardedProto, ',') !== false) {
+    $forwardedProto = trim(explode(',', $forwardedProto)[0]);
+}
+
+$isHttps = (
+    (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off') ||
+    strtolower((string) $forwardedProto) === 'https' ||
+    strtolower((string) ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '')) === 'on' ||
+    strtolower((string) ($_SERVER['REQUEST_SCHEME'] ?? '')) === 'https'
+);
+
+$host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? ($_SERVER['HTTP_HOST'] ?? '');
+if ($host !== '' && stripos($host, 'railway.app') !== false && !$isHttps) {
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+    header('Location: https://' . $host . $requestUri, true, 301);
+    exit;
+}
+
 include('config/koneksi.php');
 session_start();
 

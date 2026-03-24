@@ -75,6 +75,21 @@ if (!$usersTableExists) {
     }
 }
 
+$pendaftarTableCheck = mysqli_query($koneksi, "SHOW TABLES LIKE 'pendaftar'");
+$pendaftarTableExists = $pendaftarTableCheck && mysqli_num_rows($pendaftarTableCheck) > 0;
+
+if ($pendaftarTableExists) {
+    $fotoSkhuLowerCheck = mysqli_query($koneksi, "SHOW COLUMNS FROM pendaftar LIKE 'foto_skhu'");
+    $fotoSkhuUpperCheck = mysqli_query($koneksi, "SHOW COLUMNS FROM pendaftar LIKE 'foto_SKHU'");
+
+    $hasFotoSkhuLower = $fotoSkhuLowerCheck && mysqli_num_rows($fotoSkhuLowerCheck) > 0;
+    $hasFotoSkhuUpper = $fotoSkhuUpperCheck && mysqli_num_rows($fotoSkhuUpperCheck) > 0;
+
+    if (!$hasFotoSkhuLower && !$hasFotoSkhuUpper) {
+        mysqli_query($koneksi, "ALTER TABLE pendaftar ADD COLUMN foto_skhu VARCHAR(100) DEFAULT NULL AFTER foto");
+    }
+}
+
 mysqli_set_charset($koneksi, 'utf8mb4');
 
 ?>

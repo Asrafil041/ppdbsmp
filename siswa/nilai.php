@@ -1,8 +1,8 @@
-<?php include('../config/auto_load.php'); ?>
-
-<?php include('nilai_control.php'); ?>
-
-<?php include('../topfoot/header.php'); ?>
+<?php
+include('../config/auto_load.php');
+include('nilai_control.php');
+include('../topfoot/header.php');
+?>
 
 
 <div class="container-fluid">
@@ -17,7 +17,7 @@
         </div>
         <div class="card-body">
             <p class="text-danger">* Ubah jika ada kesalahan!</p>
-            <form class="user" method="POST" action="<?= $base_url ?>/siswa/nilai.php">
+            <form class="user" method="POST" action="nilai.php">
               <?php if(isset($data_nilai)) {
                 // "edit nilai";
                 $id_nilai = $data_nilai['id'];
