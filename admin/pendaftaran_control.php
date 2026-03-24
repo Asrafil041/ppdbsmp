@@ -1,7 +1,7 @@
 <?php
 
 // tabel pendaftar
-$all_pendaftar = mysqli_query($koneksi, "SELECT pendaftar.*, nilai.nilai_un, nilai.nilai_us, nilai.nilai_uts_1, nilai.status FROM pendaftar, nilai WHERE pendaftar.id = nilai.pendaftar_id");
+$all_pendaftar = mysqli_query($koneksi, "SELECT pendaftar.*, nilai.nilai_un, nilai.nilai_us, nilai.nilai_uts_1, nilai.status FROM pendaftar LEFT JOIN nilai ON pendaftar.id = nilai.pendaftar_id");
 
 // cek hasil
 if(!$all_pendaftar) {
@@ -21,7 +21,9 @@ if(isset($_GET['action']) && $_GET['action'] == "hapus") {
         $sql_hapus_nilai = mysqli_query($koneksi," DELETE FROM nilai where pendaftar_id = '$id_pendaftar'");
 
         // hapus foto pendaftar
-        unlink('../uploads/'. $data_pendaftar['foto']);
+        if (!empty($data_pendaftar['foto']) && file_exists('../uploads/'. $data_pendaftar['foto'])) {
+            unlink('../uploads/'. $data_pendaftar['foto']);
+        }
         $sql_hapus_pendaftar = mysqli_query($koneksi," DELETE FROM pendaftar where id = '$id_pendaftar'");
 
         // hapus nilai
