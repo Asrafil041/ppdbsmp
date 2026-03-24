@@ -169,6 +169,7 @@
               <h6 class="m-0 font-weight-bold text-primary">DATA DIRI</h6>
             </div>
             <div class="card-body">
+              <?php if(!empty($data_pendaftar)) { ?>
               <div class="card-body">
                 <div class="col-auto mt-3 text-center">
                   <?php
@@ -185,17 +186,17 @@
                     <a href="editprofil.php" class="btn btn-warning btn-sm">Edit Profil</a>
                 </div>
                 <h5 class="card-title mb-3 text-center">
-                  <?= $data_pendaftar['nama'] ?>
+                  <?= isset($data_pendaftar['nama']) ? $data_pendaftar['nama'] : 'Nama tidak tersedia' ?>
                 </h5>
                 <ul class="list-group">
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Tempat, Tanggal Lahir</h6>
-                    <small class="text-muted"><?= $data_pendaftar['tmpt_lahir'] ?>, <?= date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])); ?></small>
+                    <small class="text-muted"><?= isset($data_pendaftar['tmpt_lahir']) ? $data_pendaftar['tmpt_lahir'] : '-' ?>, <?= isset($data_pendaftar['tgl_lahir']) ? date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])) : '-' ?></small>
                   </li>
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Jenis Kelamin</h6>
                     <?php 
-                    if($data_pendaftar['jenis_kelamin'] == 'L') {
+                    if(isset($data_pendaftar['jenis_kelamin']) && $data_pendaftar['jenis_kelamin'] == 'L') {
                       $kelamin = "Laki-laki";
                     } else {
                       $kelamin = "Perempuan";
@@ -210,25 +211,26 @@
                   </li>
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Alamat</h6>
-                    <small class="text-muted"><?= $data_pendaftar['alamat'] ?></small>
+                    <small class="text-muted"><?= isset($data_pendaftar['alamat']) ? $data_pendaftar['alamat'] : '-' ?></small>
                   </li>
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Email</h6>
-                    <small class="text-muted"><?= $data_pendaftar['email'] ?></small>
+                    <small class="text-muted"><?= isset($data_pendaftar['email']) ? $data_pendaftar['email'] : '-' ?></small>
                   </li>
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Telepon</h6>
-                    <small class="text-muted"><?= $data_pendaftar['telepon'] ?></small>
+                    <small class="text-muted"><?= isset($data_pendaftar['telepon']) ? $data_pendaftar['telepon'] : '-' ?></small>
                   </li>
                 </ul>
               </div>
+              <?php } else { ?>
+              <div class="alert alert-warning">
+                Data pendaftar tidak ditemukan. Silakan hubungi administrator.
+              </div>
+              <?php } ?>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
         <div class="col-md-12">
      <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -236,6 +238,8 @@
     </div>
     <div class="card-body text-center">
       <?php
+      $foto_SKHU = '../assets/img/avatar.jpg'; // Default value
+      if(!empty($data_pendaftar)) {
                if(isset($data_pendaftar['foto_SKHU']) && $data_pendaftar['foto_SKHU'] != '') {
                 $foto_SKHU = '../uploads/' . $data_pendaftar['foto_SKHU'];
                 } else {
@@ -245,11 +249,13 @@
                 <img src="<?= $foto_SKHU ?>" class="img-fluid img-thumbnail" alt="menunggu"  style="width: 200px; height: 200px; cursor: pointer;" 
                  data-toggle="modal" 
                  data-target="#skhuModal">
+        <?php } else { ?>
+        <div class="alert alert-warning">Tidak ada dokumen untuk ditampilkan</div>
+        <?php } ?>
         </div>
       </div>
     </div>
   </div>
-</div>
       </div>
     </div>
   </div>
@@ -264,11 +270,10 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <img src="<?= $foto_SKHU ?>" class="img-fluid" alt="SKHU">
+                <img src="<?= isset($foto_SKHU) ? $foto_SKHU : '../assets/img/avatar.jpg' ?>" class="img-fluid" alt="SKHU">
             </div>
         </div>
     </div>
 </div>
-
 
 <?php include('../topfoot/footer.php'); ?>
