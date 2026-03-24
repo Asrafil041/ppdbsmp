@@ -28,14 +28,15 @@ if(isset($_POST['btn_simpan']) && $_POST['btn_simpan'] == 'simpan_profil') {
     $nama = $_POST['nama'];
     $tempat_lahir = $_POST['tempat_lahir'];
     $tanggal_lahir = !empty($_POST['tanggal_lahir']) ? date("Y-m-d", strtotime($_POST['tanggal_lahir'])) : null;
-    $jenis_kelamin = $_POST['jenis_kelamin'];
+    $jenis_kelamin = isset($_POST['jenis_kelamin']) && in_array($_POST['jenis_kelamin'], ['L', 'P']) ? $_POST['jenis_kelamin'] : null;
+    $jenis_kelamin_sql = $jenis_kelamin ? "'" . $jenis_kelamin . "'" : "NULL";
     $agama = $_POST['agama'];
     $alamat = $_POST['alamat'];
     $email = $_POST['email'];
     $telepon = $_POST['telepon'];
 
     if($id_pendaftar === null) {
-        $sql_insert_profil = "INSERT INTO pendaftar (nama, tmpt_lahir, tgl_lahir, jenis_kelamin, agama, alamat, email, telepon, foto, users_id) VALUES ('$nama', '$tempat_lahir', " . ($tanggal_lahir ? "'$tanggal_lahir'" : "NULL") . ", '$jenis_kelamin', '$agama', '$alamat', '$email', '$telepon', '', '$id_user')";
+        $sql_insert_profil = "INSERT INTO pendaftar (nama, tmpt_lahir, tgl_lahir, jenis_kelamin, agama, alamat, email, telepon, foto, users_id) VALUES ('$nama', '$tempat_lahir', " . ($tanggal_lahir ? "'$tanggal_lahir'" : "NULL") . ", $jenis_kelamin_sql, '$agama', '$alamat', '$email', '$telepon', '', '$id_user')";
         $query_insert_profil = mysqli_query($koneksi, $sql_insert_profil);
 
         if(!$query_insert_profil) {
@@ -105,7 +106,7 @@ if(isset($_POST['btn_simpan']) && $_POST['btn_simpan'] == 'simpan_profil') {
                             nama='$nama', 
                             tmpt_lahir='$tempat_lahir', 
                             tgl_lahir=" . ($tanggal_lahir ? "'$tanggal_lahir'" : "NULL") . ", 
-                            jenis_kelamin='$jenis_kelamin', 
+                                                        jenis_kelamin=$jenis_kelamin_sql, 
                             agama='$agama', 
                             alamat='$alamat', 
                             email='$email', 

@@ -174,11 +174,22 @@
                 <ul class="list-group">
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Tempat, Tanggal Lahir</h6>
-                    <small class="text-muted"><?= $data_pendaftar['tmpt_lahir'] ?>, <?= date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])); ?></small>
+                    <small class="text-muted">
+                      <?= !empty($data_pendaftar['tmpt_lahir']) ? $data_pendaftar['tmpt_lahir'] : '-' ?>,
+                      <?= (!empty($data_pendaftar['tgl_lahir']) && $data_pendaftar['tgl_lahir'] !== '0000-00-00') ? date("d-m-Y", strtotime($data_pendaftar['tgl_lahir'])) : '-' ?>
+                    </small>
                   </li>
                   <li class="list-group-item">
                     <h6 class="mb-0" style="color: black;">Jenis Kelamin</h6>
-                    <?php $kelamin = ($data_pendaftar['jenis_kelamin'] == 'L') ? 'Laki-laki' : 'Perempuan'; ?>
+                    <?php
+                    if (isset($data_pendaftar['jenis_kelamin']) && $data_pendaftar['jenis_kelamin'] == 'L') {
+                      $kelamin = 'Laki-laki';
+                    } else if (isset($data_pendaftar['jenis_kelamin']) && $data_pendaftar['jenis_kelamin'] == 'P') {
+                      $kelamin = 'Perempuan';
+                    } else {
+                      $kelamin = '-';
+                    }
+                    ?>
                     <small class="text-muted"><?= $kelamin ?></small>
                   </li>
                   <li class="list-group-item">
