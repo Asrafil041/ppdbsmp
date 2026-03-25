@@ -76,10 +76,16 @@
         <div class="card-body">
           <div class="mb-4">
              <?php
+              $foto = '../assets/img/avatar.jpg';
+              $nama_file_skhu = '';
               if(isset($data_pendaftar['foto_SKHU']) && $data_pendaftar['foto_SKHU'] != "") {
-                $foto = '../uploads/' . $data_pendaftar['foto_SKHU'];
-              } else {
-                $foto = '../assets/img/avatar.jpg';
+                $nama_file_skhu = $data_pendaftar['foto_SKHU'];
+              } else if(isset($data_pendaftar['foto_skhu']) && $data_pendaftar['foto_skhu'] != "") {
+                $nama_file_skhu = $data_pendaftar['foto_skhu'];
+              }
+
+              if($nama_file_skhu != '' && file_exists(__DIR__ . '/../uploads/' . $nama_file_skhu)) {
+                $foto = '../uploads/' . $nama_file_skhu;
               }
               ?>
               <img src="<?= $foto ?>" 
